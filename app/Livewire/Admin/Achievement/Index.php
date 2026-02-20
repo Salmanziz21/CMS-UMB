@@ -83,8 +83,8 @@ class Index extends Component
     {
         $achievement = Achievement::findOrFail($achievementId);
 
-        if ($achievement->photo && Storage::disk('public')->exists($achievement->photo)) {
-            Storage::disk('public')->delete($achievement->photo);
+        if ($achievement->image && Storage::disk('public')->exists($achievement->image)) {
+            Storage::disk('public')->delete($achievement->image);
         }
 
         $achievement->delete();

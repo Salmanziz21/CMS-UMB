@@ -23,6 +23,8 @@ class Home extends Component
     {
         $primaryStudyProgram = Studyprogram::first();
         
+        $historyContent = 'Sejarah program studi belum tersedia.';
+
         if (!$primaryStudyProgram) {
             return view('livewire.public.home', [
                 'primaryStudyProgram' => null,
@@ -48,6 +50,7 @@ class Home extends Component
                 'totalEvents' => 0,
                 'totalAchievements' => 0,
                 'historyParagraphs' => collect(),
+                'historyContent' => $historyContent,
                 'missionItems' => collect()
             ])->layout('components.layouts.public', ['title' => 'Program Studi']);
         }
@@ -117,6 +120,7 @@ class Home extends Component
             'totalEvents' => $featuredEvents->count(),
             'totalAchievements' => $featuredAchievements->count(),
             'historyParagraphs' => $historyParagraphs,
+            'historyContent' => $historyContent,
             'missionItems' => $missionItems
         ])->layout('components.layouts.public', [
             'title' => $primaryStudyProgram?->name ?? 'Program Studi',

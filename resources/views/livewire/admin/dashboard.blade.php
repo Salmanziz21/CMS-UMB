@@ -1,289 +1,376 @@
 <div>
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="flex items-center gap-3 mb-2">
-            <h1 class="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
-                Selamat Datang, {{ $userName }}!
-            </h1>
-        </div>
-        <p class="text-gray-600 dark:text-gray-400 text-base md:text-lg mb-4">
-            Kelola program studi dengan dashboard yang elegan dan powerful
-        </p>
-        
-        <!-- Status Bar -->
-        <div class="flex flex-wrap items-center gap-6 text-sm">
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 bg-green-600 rounded-full"></div>
-                <span class="text-gray-700 dark:text-gray-300">System Online</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                <span class="text-gray-700 dark:text-gray-300">{{ $dayOfWeek }}, {{ $date }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <span class="text-gray-700 dark:text-gray-300">{{ $time }}</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dashboard Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        
-        <!-- Card 1: Total Event/Kegiatan -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                    </svg>
-                </div>
-            </div>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ $totalEvents }}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Total Kegiatan</p>
-        </div>
-
-        <!-- Card 2: Total Achievement/Prestasi -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-            </div>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ $totalAchievements }}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Total Prestasi</p>
-        </div>
-
-        <!-- Card 3: Total Dosen/Lecturer -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                    <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-            </div>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ $totalLecturers }}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Total Dosen</p>
-        </div>
-
-
-        <!-- Card 4: Total Mahasiswa Aktif -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-            </div>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ number_format($totalStudents, 0, ',', '.') }}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Mahasiswa Aktif</p>
-        </div>
-
-        <!-- Card 5: Total Graduate Profile -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-            </div>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ $totalGraduateProfiles }}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Profil Lulusan</p>
-        </div>
-
-        <!-- Card 6: Total Curriculum -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                    <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                </div>
-            </div>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ $totalCurriculums }}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Mata Kuliah</p>
-        </div>
-
-        <!-- Card 7: Program Studi -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                    </svg>
-                </div>
-            </div>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ $totalStudyPrograms }}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Program Studi</p>
-        </div>
-
-    </div>
-
-    <!-- Summary Section - Two Panels -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-        
-        <!-- Left Panel: Ringkasan Program Studi -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <!-- Header -->
-            <div class="flex items-center gap-3 mb-4">
-                <div class="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                    <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
+    <!-- Stats Overview - Redesigned with Premium Look -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="relative overflow-hidden p-6 rounded-[2rem] bg-white dark:bg-zinc-900 border border-border transition-all duration-300 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1 group">
+            <div class="absolute -right-4 -top-4 size-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+            <div class="relative flex items-center gap-4">
+                <div class="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500">
+                    <i data-lucide="library" class="size-7"></i>
                 </div>
                 <div>
-                    <h2 class="text-lg font-bold text-gray-900 dark:text-white">Ringkasan Program Studi</h2>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Overview performa program studi Anda</p>
+                    <p class="text-xs font-bold text-secondary uppercase tracking-widest mb-0.5">Program Studi</p>
+                    <p class="text-3xl font-black text-foreground">{{ $totalStudyPrograms }}</p>
                 </div>
             </div>
-
-            <!-- Metrics Grid -->
-            <div class="grid grid-cols-2 gap-4">
-                <!-- Total Kegiatan -->
-                <div class="bg-gray-50 dark:bg-zinc-700/50 rounded-lg p-4">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ $totalEvents }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $recentEvents }} kegiatan bulan ini</p>
-                </div>
-
-                <!-- Kegiatan Mendatang -->
-                <div class="bg-gray-50 dark:bg-zinc-700/50 rounded-lg p-4">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                            <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ $upcomingEvents }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Kegiatan mendatang</p>
-                </div>
-
-                <!-- Kegiatan Selesai -->
-                <div class="bg-gray-50 dark:bg-zinc-700/50 rounded-lg p-4">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ $completedEvents }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Kegiatan selesai</p>
-                </div>
-
-                <!-- Total Prestasi -->
-                <div class="bg-gray-50 dark:bg-zinc-700/50 rounded-lg p-4">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ $totalAchievements }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $categoriesCount }} kategori</p>
-                </div>
+            <div class="mt-4 flex items-center gap-2 text-xs font-medium text-success">
+                <i data-lucide="trending-up" class="size-3"></i>
+                <span>Aktif & Terintegrasi</span>
             </div>
         </div>
 
-        <!-- Right Panel: Data & Konten -->
-        <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg border border-gray-200 dark:border-zinc-700 p-6">
-            <!-- Header -->
-            <div class="flex items-center gap-3 mb-4">
-                <div class="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                    <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
+        <div class="relative overflow-hidden p-6 rounded-[2rem] bg-white dark:bg-zinc-900 border border-border transition-all duration-300 hover:shadow-2xl hover:shadow-success/10 hover:-translate-y-1 group">
+            <div class="absolute -right-4 -top-4 size-24 bg-success/5 rounded-full blur-2xl group-hover:bg-success/10 transition-colors"></div>
+            <div class="relative flex items-center gap-4">
+                <div class="size-14 rounded-2xl bg-success/10 flex items-center justify-center text-success group-hover:scale-110 transition-transform duration-500">
+                    <i data-lucide="users" class="size-7"></i>
                 </div>
-                <div class="flex-1">
-                    <h2 class="text-lg font-bold text-gray-900 dark:text-white">Data & Konten</h2>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Monitor data dan performa konten</p>
+                <div>
+                    <p class="text-xs font-bold text-secondary uppercase tracking-widest mb-0.5">Mahasiswa</p>
+                    <p class="text-3xl font-black text-foreground">{{ number_format($totalStudents, 0, ',', '.') }}</p>
                 </div>
             </div>
+            <div class="mt-4 flex items-center gap-2 text-xs font-medium text-secondary">
+                <i data-lucide="activity" class="size-3"></i>
+                <span>Data terbaru semester ini</span>
+            </div>
+        </div>
 
-            <!-- Kegiatan Terbaru -->
+        <div class="relative overflow-hidden p-6 rounded-[2rem] bg-white dark:bg-zinc-900 border border-border transition-all duration-300 hover:shadow-2xl hover:shadow-warning/10 hover:-translate-y-1 group">
+            <div class="absolute -right-4 -top-4 size-24 bg-warning/5 rounded-full blur-2xl group-hover:bg-warning/10 transition-colors"></div>
+            <div class="relative flex items-center gap-4">
+                <div class="size-14 rounded-2xl bg-warning/10 flex items-center justify-center text-warning group-hover:scale-110 transition-transform duration-500">
+                    <i data-lucide="user-square-2" class="size-7"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-secondary uppercase tracking-widest mb-0.5">Total Dosen</p>
+                    <p class="text-3xl font-black text-foreground">{{ $totalLecturers }}</p>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-xs font-medium text-secondary">
+                <i data-lucide="check-circle-2" class="size-3"></i>
+                <span>Kualifikasi Terverifikasi</span>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden p-6 rounded-[2rem] bg-white dark:bg-zinc-900 border border-border transition-all duration-300 hover:shadow-2xl hover:shadow-error/10 hover:-translate-y-1 group">
+            <div class="absolute -right-4 -top-4 size-24 bg-error/5 rounded-full blur-2xl group-hover:bg-error/10 transition-colors"></div>
+            <div class="relative flex items-center gap-4">
+                <div class="size-14 rounded-2xl bg-error/10 flex items-center justify-center text-error group-hover:scale-110 transition-transform duration-500">
+                    <i data-lucide="calendar" class="size-7"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-secondary uppercase tracking-widest mb-0.5">Total Kegiatan</p>
+                    <p class="text-3xl font-black text-foreground">{{ $totalEvents }}</p>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-xs font-medium text-secondary">
+                <i data-lucide="calendar-check" class="size-3"></i>
+                <span>Tersimpan di database</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left & Center Content (8 Columns) -->
+        <div class="lg:col-span-8 flex flex-col gap-8">
+            <!-- Hero Card: Kegiatan Terbaru -->
             @if($latestEvent)
-            <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-lg p-4 mb-4 border border-orange-200 dark:border-orange-800">
-                <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase">Kegiatan Terbaru</span>
-                            <svg class="w-4 h-4 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
-                            </svg>
+            <div class="group relative overflow-hidden rounded-[2.5rem] bg-zinc-900 dark:bg-zinc-950 p-10 text-white shadow-2xl shadow-zinc-950/40">
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div class="max-w-xl">
+                        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-white text-[11px] font-black uppercase tracking-[0.2em] mb-6 border border-white/10 backdrop-blur-md">
+                            <span class="size-2 rounded-full bg-warning animate-pulse"></span>
+                            Sorotan Kegiatan
+                        </span>
+                        <h3 class="text-4xl font-black mb-4 leading-tight group-hover:text-primary transition-colors duration-300">
+                            {{ $latestEvent->title }}
+                        </h3>
+                        <p class="text-white/60 text-lg leading-relaxed mb-8 line-clamp-2 italic font-medium">
+                            "{{ Str::limit($latestEvent->description, 150) }}"
+                        </p>
+                        
+                        <div class="flex flex-wrap items-center gap-6">
+                            <div class="flex items-center gap-3 py-2 px-4 rounded-2xl bg-white/5 border border-white/5">
+                                <div class="size-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+                                    <i data-lucide="calendar-days" class="size-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-white/40 font-black uppercase">Waktu Pelaksanaan</p>
+                                    <p class="font-bold">{{ \Carbon\Carbon::parse($latestEvent->date)->isoFormat('dddd, D MMMM YYYY') }}</p>
+                                </div>
+                            </div>
+                            
+                            <a href="{{ route('admin.event.index') }}" wire:navigate class="group/btn flex items-center gap-3 px-8 py-4 bg-white text-zinc-900 rounded-2xl font-black text-sm hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20">
+                                Lihat Detail
+                                <i data-lucide="arrow-right" class="size-4 group-hover/btn:translate-x-1 transition-transform"></i>
+                            </a>
                         </div>
-                        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-2">{{ $latestEvent->title }}</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Tanggal: {{ \Carbon\Carbon::parse($latestEvent->date)->format('d M Y') }}
-                        </p>
-                        @if($latestEvent->description)
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
-                            {{ Str::limit($latestEvent->description, 80) }}
-                        </p>
-                        @endif
                     </div>
-                    <div class="p-3 bg-white dark:bg-zinc-700 rounded-lg">
-                        <svg class="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            @endif
-
-            <!-- Kegiatan Mendatang -->
-            <div>
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase">Kegiatan Mendatang ({{ $criticalEvents->count() }} Item)</span>
-                        <svg class="w-4 h-4 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                    </div>
-                    <a href="{{ route('admin.event.index') }}" class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium">
-                        Lihat Semua →
-                    </a>
-                </div>
-
-                <div class="space-y-2">
-                    @forelse($criticalEvents as $event)
-                    <div class="bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg p-3 flex items-center justify-between">
-                        <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $event->title }}</p>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
-                                    Mendatang
-                                </span>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ \Carbon\Carbon::parse($event->date)->format('d M Y') }}
-                                </span>
+                    
+                    <div class="hidden md:flex flex-col items-center justify-center p-6 border-l border-white/10 pl-12">
+                        <div class="text-center">
+                            <p class="text-6xl font-black text-white/10 mb-2">NEW</p>
+                            <div class="size-24 rounded-full border-2 border-dashed border-white/20 flex items-center justify-center animate-[spin_10s_linear_infinite]">
+                                <i data-lucide="sparkles" class="size-10 text-warning opacity-50"></i>
                             </div>
                         </div>
                     </div>
-                    @empty
-                    <div class="bg-gray-50 dark:bg-zinc-700/50 border border-gray-200 dark:border-zinc-600 rounded-lg p-4 text-center">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Tidak ada kegiatan mendatang</p>
-                    </div>
-                    @endforelse
+                </div>
+                
+                <!-- Advanced Decorations -->
+                <div class="absolute -bottom-24 -right-24 size-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none"></div>
+                <div class="absolute -top-24 -left-24 size-80 bg-warning/10 rounded-full blur-[80px] pointer-events-none"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-50 pointer-events-none"></div>
+            </div>
+            @endif
+
+            <!-- Quick Access Card - Expanded -->
+            <div class="bg-white dark:bg-zinc-900 rounded-[2rem] p-8 border border-border shadow-sm">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-black text-xl text-foreground flex items-center gap-3">
+                        <i data-lucide="zap" class="size-6 text-warning"></i>
+                        Akses Cepat
+                    </h3>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <a href="{{ route('admin.event.index') }}" wire:navigate class="flex flex-col items-center justify-center p-6 rounded-3xl bg-muted dark:bg-zinc-800/50 hover:bg-primary/10 hover:border-primary/20 border border-transparent transition-all group text-center">
+                        <div class="size-12 rounded-2xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-primary group-hover:scale-110 transition-transform mb-3 mx-auto">
+                            <i data-lucide="calendar-plus" class="size-6"></i>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-tighter text-secondary group-hover:text-primary transition-colors">Tambah Event</span>
+                    </a>
+                    
+                    <a href="{{ route('admin.lecturer.index') }}" wire:navigate class="flex flex-col items-center justify-center p-6 rounded-3xl bg-muted dark:bg-zinc-800/50 hover:bg-success/10 hover:border-success/20 border border-transparent transition-all group text-center">
+                        <div class="size-12 rounded-2xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-success group-hover:scale-110 transition-transform mb-3 mx-auto">
+                            <i data-lucide="user-plus" class="size-6"></i>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-tighter text-secondary group-hover:text-success transition-colors">Kelola Dosen</span>
+                    </a>
+                    
+                    <a href="{{ route('admin.studyprogram.index') }}" wire:navigate class="flex flex-col items-center justify-center p-6 rounded-3xl bg-muted dark:bg-zinc-800/50 hover:bg-warning/10 hover:border-warning/20 border border-transparent transition-all group text-center">
+                        <div class="size-12 rounded-2xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-warning group-hover:scale-110 transition-transform mb-3 mx-auto">
+                            <i data-lucide="graduation-cap" class="size-6"></i>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-tighter text-secondary group-hover:text-warning transition-colors">Prodi Kita</span>
+                    </a>
+                    
+                    <a href="{{ route('admin.userinterface.index') }}" wire:navigate class="flex flex-col items-center justify-center p-6 rounded-3xl bg-muted dark:bg-zinc-800/50 hover:bg-error/10 hover:border-error/20 border border-transparent transition-all group text-center">
+                        <div class="size-12 rounded-2xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-error group-hover:scale-110 transition-transform mb-3 mx-auto">
+                            <i data-lucide="settings-2" class="size-6"></i>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-tighter text-secondary group-hover:text-error transition-colors">Tampilan UI</span>
+                    </a>
                 </div>
             </div>
         </div>
 
+        <!-- Right Content (4 Columns) -->
+        <div class="lg:col-span-4 flex flex-col gap-8">
+            <!-- System Info Box -->
+            <div class="bg-zinc-900 dark:bg-white p-8 rounded-[2.5rem] text-white dark:text-zinc-900 shadow-xl overflow-hidden relative group">
+                <div class="relative z-10">
+                    <h3 class="font-black text-xl mb-6 flex items-center gap-3">
+                        <i data-lucide="info" class="size-6 text-primary"></i>
+                        Health Status
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="size-10 rounded-xl bg-white/10 dark:bg-zinc-100 flex items-center justify-center text-primary">
+                                <i data-lucide="shield-check" class="size-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black uppercase tracking-tight opacity-50">Sesi Keamanan</p>
+                                <p class="text-sm font-bold truncate max-w-[150px]">{{ $userName }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <div class="size-10 rounded-xl bg-white/10 dark:bg-zinc-100 flex items-center justify-center text-success">
+                                <i data-lucide="check-circle-2" class="size-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black uppercase tracking-tight opacity-50">Waktu Server</p>
+                                <p id="server-clock" class="text-sm font-bold">{{ $time }} WIB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Decorations -->
+                <div class="absolute -bottom-10 -right-10 size-40 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors"></div>
+            </div>
+
+            <!-- Content Summary Widget -->
+            <div class="bg-white dark:bg-zinc-900 rounded-[2rem] p-8 border border-border shadow-sm flex-1">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-black text-xl text-foreground flex items-center gap-3">
+                        <i data-lucide="bar-chart-big" class="size-6 text-primary"></i>
+                        Ringkasan
+                    </h3>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 rounded-2xl bg-muted dark:bg-zinc-800/50 group hover:bg-white dark:hover:bg-zinc-800 transition-colors border border-transparent hover:border-border">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xs group-hover:scale-110 transition-transform">AA</div>
+                            <div>
+                                <p class="text-[11px] font-black text-foreground leading-tight">Prestasi</p>
+                                <p class="text-[9px] text-secondary font-bold uppercase tracking-tighter">{{ $categoriesCount }} Kategori</p>
+                            </div>
+                        </div>
+                        <span class="text-lg font-black text-foreground">{{ $totalAchievements }}</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 rounded-2xl bg-muted dark:bg-zinc-800/50 group hover:bg-white dark:hover:bg-zinc-800 transition-colors border border-transparent hover:border-border">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 rounded-xl bg-success/10 flex items-center justify-center text-success font-bold text-xs group-hover:scale-110 transition-transform">GP</div>
+                            <div>
+                                <p class="text-[11px] font-black text-foreground leading-tight">Lulusan</p>
+                                <p class="text-[9px] text-secondary font-bold uppercase tracking-tighter">Profil Aktif</p>
+                            </div>
+                        </div>
+                        <span class="text-lg font-black text-foreground">{{ $totalGraduateProfiles }}</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 rounded-2xl bg-muted dark:bg-zinc-800/50 group hover:bg-white dark:hover:bg-zinc-800 transition-colors border border-transparent hover:border-border">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning font-bold text-xs group-hover:scale-110 transition-transform">MK</div>
+                            <div>
+                                <p class="text-[11px] font-black text-foreground leading-tight">Kurikulum</p>
+                                <p class="text-[9px] text-secondary font-bold uppercase tracking-tighter">{{ $totalCurriculums }} Matkul</p>
+                            </div>
+                        </div>
+                        <span class="text-lg font-black text-foreground">{{ $totalCurriculums }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- Secondary Content: Prestasi & Dosen Previews -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12 pb-12">
+        <!-- Recent Achievements Preview -->
+        <div class="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 border border-border shadow-sm group">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="font-black text-xl text-foreground flex items-center gap-3">
+                        <i data-lucide="trophy" class="size-6 text-yellow-500"></i>
+                        Karya & Prestasi Terbaru
+                    </h3>
+                    <p class="text-xs text-secondary font-medium mt-1">Update karya mahasiswa & prodi</p>
+                </div>
+                <a href="{{ route('admin.achievement.index') }}" wire:navigate class="size-10 rounded-full bg-muted flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all">
+                    <i data-lucide="arrow-right" class="size-5"></i>
+                </a>
+            </div>
+
+            <div class="space-y-4">
+                @forelse($recentAchievementsList as $achievement)
+                <div class="flex items-center gap-5 p-4 rounded-3xl bg-muted/50 dark:bg-zinc-800/30 border border-transparent hover:border-border hover:bg-white dark:hover:bg-zinc-800 transition-all">
+                    <div class="size-16 rounded-2xl overflow-hidden bg-white dark:bg-zinc-800 flex items-center justify-center shrink-0 border border-border">
+                        @if($achievement->image)
+                            <img src="{{ asset('storage/' . $achievement->image) }}" alt="Achievement" class="w-full h-full object-cover">
+                        @else
+                            <i data-lucide="image" class="size-6 text-secondary/30"></i>
+                        @endif
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-black uppercase">{{ $achievement->category }}</span>
+                            <span class="text-[10px] text-secondary font-bold uppercase">{{ \Carbon\Carbon::parse($achievement->date)->isoFormat('YYYY') }}</span>
+                        </div>
+                        <p class="font-bold text-foreground truncate">{{ $achievement->title }}</p>
+                        <p class="text-xs text-secondary truncate">{{ Str::limit($achievement->description, 60) }}</p>
+                    </div>
+                </div>
+                @empty
+                <div class="py-8 text-center text-secondary">Belum ada karya terbaru.</div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Recent Lecturers Preview -->
+        <div class="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 border border-border shadow-sm group">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="font-black text-xl text-foreground flex items-center gap-3">
+                        <i data-lucide="users-2" class="size-6 text-primary"></i>
+                        Dosen & Staff Terbaru
+                    </h3>
+                    <p class="text-xs text-secondary font-medium mt-1">Tenaga pendidik profesional kami</p>
+                </div>
+                <a href="{{ route('admin.lecturer.index') }}" wire:navigate class="size-10 rounded-full bg-muted flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all">
+                    <i data-lucide="arrow-right" class="size-5"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                @forelse($recentLecturersList as $lecturer)
+                <div class="flex items-center gap-5 p-4 rounded-3xl bg-muted/50 dark:bg-zinc-800/30 border border-transparent hover:border-border hover:bg-white dark:hover:bg-zinc-800 transition-all">
+                    <div class="size-14 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 border-2 border-white dark:border-zinc-800 shadow-sm">
+                        @if($lecturer->image)
+                            <img src="{{ asset('storage/' . $lecturer->image) }}" alt="Lecturer" class="w-full h-full object-cover">
+                        @else
+                            <span class="text-primary font-black text-lg">{{ substr($lecturer->name, 0, 1) }}</span>
+                        @endif
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-foreground truncate">{{ $lecturer->name }}</p>
+                        <div class="flex items-center gap-3 mt-1">
+                            <div class="flex items-center gap-1.5 text-[10px] font-bold text-secondary uppercase">
+                                <i data-lucide="briefcase" class="size-3"></i>
+                                {{ $lecturer->position ?? 'Dosen Tetap' }}
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase">
+                                <i data-lucide="graduation-cap" class="size-3"></i>
+                                {{ $lecturer->degree ?? 'S2/S3' }}
+                            </div>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-right" class="size-4 text-secondary/30"></i>
+                </div>
+                @empty
+                <div class="py-8 text-center text-secondary">Belum ada data dosen.</div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateServerClock() {
+            const clockElement = document.getElementById('server-clock');
+            if (!clockElement) return;
+
+            // Get initial time from the element text (format: HH.mm.ss WIB)
+            let timeStr = clockElement.innerText.replace(' WIB', '').split('.');
+            let hours = parseInt(timeStr[0]);
+            let minutes = parseInt(timeStr[1]);
+            let seconds = parseInt(timeStr[2]);
+
+            setInterval(() => {
+                seconds++;
+                if (seconds >= 60) {
+                    seconds = 0;
+                    minutes++;
+                    if (minutes >= 60) {
+                        minutes = 0;
+                        hours++;
+                        if (hours >= 24) hours = 0;
+                    }
+                }
+
+                const displayTime = 
+                    String(hours).padStart(2, '0') + '.' + 
+                    String(minutes).padStart(2, '0') + '.' + 
+                    String(seconds).padStart(2, '0') + ' WIB';
+                
+                clockElement.innerText = displayTime;
+            }, 1000);
+        }
+
+        // Initialize clock after page load or Livewire navigation
+        document.addEventListener('livewire:navigated', updateServerClock);
+        document.addEventListener('DOMContentLoaded', updateServerClock);
+    </script>
 </div>

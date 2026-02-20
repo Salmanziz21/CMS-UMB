@@ -133,9 +133,20 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        View::composer('partials.head', function ($view) {
+        View::composer(['partials.head', 'components.layouts.app.sidebar'], function ($view) {
             $userinterface = Userinterface::first();
-            $view->with('userinterface', $userinterface);
+            $studyprogram = Studyprogram::first();
+
+            $sidebarLogoUrl = null;
+            if ($userinterface?->image_logo && \Illuminate\Support\Facades\Storage::disk('public')->exists($userinterface->image_logo)) {
+                $sidebarLogoUrl = asset('storage/' . $userinterface->image_logo);
+            }
+
+            $view->with([
+                'userinterface'   => $userinterface,
+                'studyprogram'    => $studyprogram,
+                'sidebarLogoUrl'  => $sidebarLogoUrl,
+            ]);
         });
     }
 }

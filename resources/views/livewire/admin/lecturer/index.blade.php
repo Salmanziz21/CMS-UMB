@@ -1,129 +1,159 @@
-<div>
-    <!-- Judul-->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Data Dosen</h1>
-            <p class="text-gray-600 dark:text-zinc-300">Kelola semua Data Disini</p>
-        </div>
-        <div class="flex flex-col gap-3 w-full md:w-auto md:flex-row md:items-center md:justify-end">
-            <flux:input wire:model.live.debounce.400ms="search" icon="magnifying-glass" placeholder="Cari nama / bidang" />
-            <flux:button
-                class="w-full md:w-auto"
-                variant="outline"
-                icon="arrow-path"
-                wire:click="resetFilters"
-                type="button">
-                Reset Filter
-            </flux:button>
-            <flux:button
-                class="w-full md:w-auto"
-                variant="primary"
-                color="gray"
-                icon="plus"
-                href="{{ route('admin.lecturer.create') }}"
-                size="sm">
-                Tambah Dosen
-            </flux:button>
+<div x-data="{ showDeleteModal: false, deleteId: null }">
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="flex items-center gap-4 p-5 rounded-2xl bg-white border border-border shadow-sm">
+            <div class="size-12 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
+                <i data-lucide="users" class="size-6"></i>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-secondary">Total Dosen</p>
+                <p class="text-2xl font-bold text-foreground">{{ $lecturers->total() }}</p>
+            </div>
         </div>
     </div>
 
+    <!-- Actions Toolbar -->
+    <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
+        <!-- Search & Filter -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-1 max-w-2xl">
+            <div class="relative flex-1 group">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-secondary group-focus-within:text-primary transition-colors"></i>
+                <input 
+                    type="text" 
+                    wire:model.live.debounce.400ms="search"
+                    placeholder="Cari nama atau bidang dosen..." 
+                    class="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-white text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-300"
+                >
+            </div>
+            
+            <div class="flex gap-2">
+                <button 
+                    wire:click="resetFilters"
+                    class="size-12 flex items-center justify-center rounded-xl bg-white border border-border hover:border-primary text-secondary hover:text-primary transition-all duration-300 cursor-pointer"
+                    title="Reset Filter"
+                >
+                    <i data-lucide="refresh-cw" class="size-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Button -->
+        <a href="{{ route('admin.lecturer.create') }}" wire:navigate class="w-full md:w-auto px-6 h-12 bg-primary hover:bg-primary-hover text-white rounded-full font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer shrink-0">
+            <i data-lucide="user-plus" class="size-5"></i>
+            <span>Tambah Dosen</span>
+        </a>
+    </div>
+
     @if (session()->has('message'))
-        <div class="mb-4 p-4 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 rounded-lg">
+        <div class="mb-6 p-4 rounded-2xl bg-success-light border border-success/20 text-success font-bold flex items-center gap-3">
+            <i data-lucide="check-circle" class="size-5"></i>
             {{ session('message') }}
         </div>
     @endif
 
-     <!-- Tabel -->
-    <div class="mt-6 bg-white dark:bg-zinc-800 shadow rounded-lg overflow-hidden border border-gray-200 dark:border-zinc-700 transition-colors duration-200">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-gray-700 dark:text-zinc-200">
-                <thead class="bg-gray-100 dark:bg-zinc-700 text-gray-900 dark:text-zinc-100 uppercase text-xs font-semibold">
-                    <tr>
-                        <th class="px-4 py-3 text-center">ID</th>
-                        <th class="px-4 py-3 text-center">Nama</th>
-                        <th class="px-4 py-3 text-center">Bidang</th>
-                        <th class="px-4 py-3 text-center">Photo</th>
-                        <th class="px-4 py-3 text-center">Dibuat</th>
-                        <th class="px-4 py-3 text-center">Diperbarui</th>
-                        <th class="px-4 py-3 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-zinc-700 text-center ">
-                    @forelse ($lecturers as $lecturer)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition duration-150 ease-in-out cursor-pointer">
-                        <td class="px-4 py-3 font-medium text-gray-900 dark:text-zinc-100">
-                            {{ $lecturers->firstItem() + $loop->index }}
-                        </td>
-                        <td class="px-4 py-3 font-medium text-emerald-600 dark:text-emerald-400">
-                            {{ $lecturer->name }}
-                        </td>
-                        <td class="px-4 py-3 font-medium text-emerald-600 dark:text-emerald-400">
-                            {{ $lecturer->major }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex justify-center">
-                                @if($lecturer->photo)
-                                    @if($lecturer->photo_exists)
-                                        <img
-                                            src="{{ asset('storage/' . $lecturer->photo) }}"
-                                            alt="{{ $lecturer->name }}"
-                                            class="w-10 h-10 rounded-lg object-cover border-2 border-gray-300 dark:border-gray-600"
-                                            onerror="this.style.display='none'; this.parentNode.querySelector('.fallback').style.display='flex';">
-                                    @endif
-                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center border-2 border-gray-300 dark:border-gray-600 fallback {{ $lecturer->photo_exists ? 'hidden' : 'flex' }}">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                @else
-                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center border-2 border-gray-300 dark:border-gray-600 fallback">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                @endif
-                            </div>
-                        </td>
-                        <td>{{ $lecturer->created_at }}</td>
-                        <td>{{ $lecturer->updated_at }}</td>
-                        <td class="text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <flux:button
-                                    variant="primary"
-                                    icon="pencil-square"
-                                    href="{{ route('admin.lecturer.edit', $lecturer->id) }}"
-                                    size="sm">
-                                    Edit
-                                </flux:button>
-                                <flux:button
-                                    variant="danger"
-                                    icon="trash"
-                                    size="sm"
-                                    wire:click="delete({{ $lecturer->id }})"
-                                    onclick="return confirm('Hapus dosen ini?')">
-                                    Hapus
-                                </flux:button>
-                            </div>
-                        </td>
+    <!-- Data Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        @forelse ($lecturers as $lecturer)
+        <div class="group bg-white rounded-3xl p-6 border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 flex flex-col items-center text-center relative overflow-hidden">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 inset-x-0 h-24 bg-muted group-hover:bg-primary/5 transition-colors duration-500"></div>
+            
+            <div class="relative mt-4">
+                @if($lecturer->photo)
+                    <img src="{{ asset('storage/' . $lecturer->photo) }}" alt="{{ $lecturer->name }}" class="size-28 rounded-full object-cover ring-4 ring-white shadow-xl group-hover:scale-105 transition-all duration-500">
+                @else
+                    <div class="size-28 rounded-full bg-muted flex items-center justify-center text-secondary ring-4 ring-white shadow-xl group-hover:scale-105 transition-all duration-500">
+                        <i data-lucide="user-square-2" class="size-12"></i>
+                    </div>
+                @endif
+            </div>
 
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="8" class="px-4 py-8 text-center text-gray-500 dark:text-zinc-500">
-                            <div class="flex flex-col items-center justify-center gap-2">
-                                <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                                </svg>
-                                <span>Belum ada data.</span>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            <div class="mt-6 flex flex-col items-center w-full">
+                <h3 class="font-bold text-foreground text-lg leading-tight group-hover:text-primary transition-colors">{{ $lecturer->name }}</h3>
+                <span class="mt-2 inline-flex items-center px-3 py-1 rounded-full bg-warning/10 text-warning text-xs font-bold uppercase tracking-wider">
+                    {{ $lecturer->major }}
+                </span>
+            </div>
+            
+            <div class="mt-8 flex items-center gap-2 w-full pt-6 border-t border-border">
+                <a href="{{ route('admin.lecturer.edit', $lecturer->id) }}" wire:navigate class="flex-1 h-10 flex items-center justify-center rounded-xl border border-border hover:border-primary text-secondary hover:text-primary font-bold text-sm transition-all duration-300 cursor-pointer">
+                    <i data-lucide="edit-3" class="size-4 mr-2"></i>
+                    Edit
+                </a>
+                <button 
+                    @click="deleteId = {{ $lecturer->id }}; showDeleteModal = true"
+                    class="size-10 flex items-center justify-center rounded-xl bg-error/10 text-error hover:bg-error hover:text-white transition-all duration-300 cursor-pointer shadow-sm"
+                    title="Hapus"
+                >
+                    <i data-lucide="trash-2" class="size-4"></i>
+                </button>
+            </div>
         </div>
-        <div class="px-4 py-3 border-t border-gray-200 dark:border-zinc-700">
-            {{ $lecturers->links() }}
+        @empty
+        <div class="col-span-full py-20 bg-white rounded-3xl border border-dashed border-border flex flex-col items-center justify-center text-center">
+            <div class="size-20 rounded-full bg-muted flex items-center justify-center text-secondary mb-4">
+                <i data-lucide="info" class="size-10"></i>
+            </div>
+            <h3 class="text-xl font-bold text-foreground">Belum ada data dosen</h3>
+            <p class="text-secondary mt-1">Silakan tambah dosen baru untuk memulai.</p>
+        </div>
+        @endforelse
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-12 pb-8">
+        {{ $lecturers->links() }}
+    </div>
+
+
+    <!-- Delete Confirmation Modal -->
+    <div
+        x-show="showDeleteModal"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0"
+        style="display: none;"
+    >
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" @click="showDeleteModal = false"></div>
+
+        <div 
+            class="relative bg-white dark:bg-zinc-900 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all border border-border"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        >
+            <div class="flex flex-col items-center text-center">
+                <div class="size-14 rounded-full bg-error/10 flex items-center justify-center text-error mb-4">
+                    <i data-lucide="alert-triangle" class="size-7"></i>
+                </div>
+                
+                <h3 class="text-xl font-bold text-foreground mb-2">Hapus Dosen?</h3>
+                <p class="text-secondary text-sm mb-6">
+                    Apakah Anda yakin ingin menghapus data dosen ini? Tindakan ini tidak dapat dibatalkan.
+                </p>
+
+                <div class="flex gap-3 w-full">
+                    <button 
+                        @click="showDeleteModal = false"
+                        class="flex-1 px-4 py-2.5 rounded-xl border border-border text-foreground font-semibold hover:bg-muted transition-colors"
+                    >
+                        Batal
+                    </button>
+                    <button 
+                        @click="$wire.delete(deleteId); showDeleteModal = false"
+                        class="flex-1 px-4 py-2.5 rounded-xl bg-error text-white font-semibold hover:bg-error-hover shadow-lg shadow-error/20 transition-all hover:scale-[1.02]"
+                    >
+                        Ya, Hapus
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

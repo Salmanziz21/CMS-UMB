@@ -1,91 +1,137 @@
 <div>
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tampilan UI</h1>
-        <p class="text-gray-600 dark:text-zinc-300">Kelola logo dan background website</p>
+    <!-- Header Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground">Tampilan Visual</h1>
+        <p class="text-secondary mt-1">Kelola identitas visual dan branding utama website Anda.</p>
     </div>
 
     @if (session()->has('message'))
-        <div class="mb-4 p-4 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 rounded-lg">
+        <div class="mb-6 p-4 rounded-2xl bg-success-light border border-success/20 text-success font-bold flex items-center gap-3">
+            <i data-lucide="check-circle" class="size-5"></i>
             {{ session('message') }}
         </div>
     @endif
 
-    <div class="bg-white dark:bg-zinc-800 shadow rounded-lg border border-gray-200 dark:border-zinc-700 p-6">
-        <x-form wire:submit.prevent="update" class="space-y-6">
-            <div>
-                <flux:input
-                    wire:model.live="image_logo"
-                    type="file"
-                    accept="image/*"
-                    label="Logo"
-                />
-                @error('image_logo')
-                    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                @enderror
-                <div class="mt-2">
-                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Preview Logo</p>
-                    @if ($image_logo && is_object($image_logo) && method_exists($image_logo, 'temporaryUrl'))
-                        <img src="{{ $image_logo->temporaryUrl() }}" alt="Preview logo baru" class="h-20 w-auto rounded-lg object-contain border border-dashed border-emerald-300" />
-                    @elseif ($userinterface && $userinterface->image_logo)
-                        <div class="flex items-center gap-2">
-                            @if($logoExists)
-                                <img 
-                                    src="{{ asset('storage/' . $userinterface->image_logo) }}" 
-                                    alt="Logo saat ini" 
-                                    class="h-20 w-auto rounded-lg object-contain border border-slate-200"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                            @endif
-                            <div class="h-20 w-20 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center border border-slate-200 {{ $logoExists ? 'hidden' : 'flex' }}">
-                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
-                                </svg>
+    <form wire:submit.prevent="update" class="space-y-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Logo Section -->
+            <div class="bg-white rounded-3xl p-8 border border-border shadow-sm flex flex-col h-full">
+                <div class="flex items-center gap-3 mb-8 border-b border-border pb-4">
+                    <div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                        <i data-lucide="image" class="size-5"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-foreground leading-tight">Logo Website</h2>
+                        <p class="text-xs text-secondary mt-0.5">Format: PNG atau SVG disarankan</p>
+                    </div>
+                </div>
+
+                <div class="flex-1 space-y-8">
+                    <!-- Upload Box -->
+                    <div class="relative group">
+                        <label class="flex flex-col items-center justify-center w-full h-48 rounded-2xl border-2 border-dashed border-border bg-muted/20 group-hover:bg-muted/30 group-hover:border-primary/50 transition-all duration-300 cursor-pointer overflow-hidden">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <i data-lucide="upload-cloud" class="size-10 text-secondary group-hover:text-primary mb-3 transition-colors"></i>
+                                <p class="mb-1 text-sm text-foreground font-bold">Klik untuk unggah logo</p>
+                                <p class="text-xs text-secondary">Maksimal 2 MB</p>
                             </div>
+                            <input wire:model.live="image_logo" type="file" class="hidden" accept="image/*" />
+                        </label>
+                        @error('image_logo')
+                            <p class="text-xs text-error font-bold mt-2 ml-1 flex items-center gap-1.5">
+                                <i data-lucide="alert-circle" class="size-3"></i>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="p-6 rounded-2xl bg-muted/30 border border-border flex items-center justify-center relative">
+                        <span class="absolute top-4 left-4 text-[10px] font-black uppercase tracking-widest text-secondary">Preview Saat Ini</span>
+                        
+                        <div class="flex items-center justify-center min-h-[120px]">
+                            @if ($image_logo && is_object($image_logo) && method_exists($image_logo, 'temporaryUrl'))
+                                {{-- New file staged for upload --}}
+                                <img src="{{ $image_logo->temporaryUrl() }}" alt="Preview logo baru" class="max-h-24 w-auto object-contain filter drop-shadow-md" />
+                            @elseif ($userinterface && $userinterface->image_logo && $logoExists)
+                                {{-- Existing saved logo --}}
+                                <img src="{{ asset('storage/' . $userinterface->image_logo) }}" alt="Logo saat ini" class="max-h-24 w-auto object-contain filter drop-shadow-md" />
+                            @elseif ($userinterface && $userinterface->image_logo)
+                                {{-- Path exists in DB but file not found via Storage check — try rendering anyway --}}
+                                <img src="{{ asset('storage/' . $userinterface->image_logo) }}" alt="Logo saat ini" class="max-h-24 w-auto object-contain filter drop-shadow-md" />
+                            @else
+                                <div class="flex flex-col items-center text-secondary opacity-40">
+                                    <i data-lucide="image-off" class="size-12 mb-2"></i>
+                                    <p class="text-xs font-bold">Belum ada logo</p>
+                                </div>
+                            @endif
                         </div>
-                    @else
-                        <p class="text-sm text-slate-500">Belum ada logo.</p>
-                    @endif
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <flux:input
-                    wire:model.live="image_background"
-                    type="file"
-                    accept="image/*"
-                    label="Background"
-                />
-                <p class="mt-1 text-xs text-gray-500 dark:text-zinc-400">Rekomendasi: minimal 1920×1080 px, max 10 MB. Format: JPG, PNG, GIF, WebP, SVG.</p>
-                @error('image_background')
-                    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                @enderror
-                <div class="mt-2">
-                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Preview Background</p>
-                    @if ($image_background && is_object($image_background) && method_exists($image_background, 'temporaryUrl'))
-                        <img src="{{ $image_background->temporaryUrl() }}" alt="Preview background baru" class="h-32 w-auto rounded-lg object-cover border border-dashed border-emerald-300" />
-                    @elseif ($userinterface && $userinterface->image_background)
-                        <div class="flex items-center gap-2">
-                            @if($bgExists)
-                                <img 
-                                    src="{{ asset('storage/' . $userinterface->image_background) }}" 
-                                    alt="Background saat ini" 
-                                    class="h-32 w-auto rounded-lg object-cover border border-slate-200"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                            @endif
-                            <div class="h-32 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center border border-slate-200 {{ $bgExists ? 'hidden' : 'flex' }}">
-                                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
-                                </svg>
+            <!-- Background Section -->
+            <div class="bg-white rounded-3xl p-8 border border-border shadow-sm flex flex-col h-full">
+                <div class="flex items-center gap-3 mb-8 border-b border-border pb-4">
+                    <div class="size-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
+                        <i data-lucide="monitor" class="size-5"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-foreground leading-tight">Hero Background</h2>
+                        <p class="text-xs text-secondary mt-0.5">Ukuran ideal: 1920 × 1080 px</p>
+                    </div>
+                </div>
+
+                <div class="flex-1 space-y-8">
+                    <!-- Upload Box -->
+                    <div class="relative group">
+                        <label class="flex flex-col items-center justify-center w-full h-48 rounded-2xl border-2 border-dashed border-border bg-muted/20 group-hover:bg-muted/30 group-hover:border-primary/50 transition-all duration-300 cursor-pointer overflow-hidden">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+                                <i data-lucide="image-plus" class="size-10 text-secondary group-hover:text-warning mb-3 transition-colors"></i>
+                                <p class="mb-1 text-sm text-foreground font-bold">Pilih gambar latar belakang</p>
+                                <p class="text-[10px] text-secondary">JPG, PNG, WebP (Maks 10 MB)</p>
                             </div>
+                            <input wire:model.live="image_background" type="file" class="hidden" accept="image/*" />
+                        </label>
+                        @error('image_background')
+                            <p class="text-xs text-error font-bold mt-2 ml-1 flex items-center gap-1.5">
+                                <i data-lucide="alert-circle" class="size-3"></i>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="rounded-2xl border border-border overflow-hidden relative group">
+                        <span class="absolute top-4 left-4 z-10 text-[10px] font-black uppercase tracking-widest text-white drop-shadow-lg">Preview Visual</span>
+                        
+                        <div class="aspect-video w-full bg-muted flex items-center justify-center overflow-hidden">
+                            @if ($image_background && is_object($image_background) && method_exists($image_background, 'temporaryUrl'))
+                                {{-- New file staged for upload --}}
+                                <img src="{{ $image_background->temporaryUrl() }}" alt="Preview baru" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                            @elseif ($userinterface && $userinterface->image_background)
+                                {{-- Existing saved background --}}
+                                <img src="{{ asset('storage/' . $userinterface->image_background) }}" alt="Background saat ini" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                            @else
+                                <div class="flex flex-col items-center text-secondary opacity-40">
+                                    <i data-lucide="panorama" class="size-16 mb-2"></i>
+                                    <p class="text-xs font-bold">Belum ada background</p>
+                                </div>
+                            @endif
                         </div>
-                    @else
-                        <p class="text-sm text-slate-500">Belum ada background.</p>
-                    @endif
+                    </div>
                 </div>
             </div>
-            
-            <div class="flex gap-2 pt-4">
-                <flux:button type="submit" icon="check" variant="primary">Simpan Data</flux:button>
-            </div>
-        </x-form>
-    </div>
+        </div>
+        
+        <div class="flex items-center justify-end py-10 border-t border-border mt-8">
+            <button type="submit" class="w-full md:w-auto px-12 h-16 bg-primary hover:bg-primary-hover text-white rounded-full font-black shadow-xl shadow-primary/20 hover:shadow-primary/40 flex items-center justify-center gap-3 transition-all duration-300 cursor-pointer text-lg">
+                <i data-lucide="save" class="size-6"></i>
+                <span>Terapkan Visual Baru</span>
+            </button>
+        </div>
+    </form>
 </div>
+

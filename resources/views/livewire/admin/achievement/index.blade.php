@@ -1,159 +1,198 @@
-<div>
-    <!-- Judul-->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Data Prestasi</h1>
-            <p class="text-gray-600 dark:text-zinc-300">Kelola semua Data Disini</p>
+<div x-data="{ showDeleteModal: false, deleteId: null }">
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="flex items-center gap-4 p-5 rounded-2xl bg-white border border-border shadow-sm">
+            <div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <i data-lucide="award" class="size-6"></i>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-secondary">Total Prestasi</p>
+                <p class="text-2xl font-bold text-foreground">{{ $achievements->total() }}</p>
+            </div>
         </div>
-        <div class="flex flex-col gap-3 w-full md:w-auto md:flex-row md:items-center md:justify-end">
-            <div class="grid gap-3 w-full md:w-auto md:grid-cols-2">
-                <flux:input wire:model.live.debounce.400ms="search" icon="magnifying-glass" placeholder="Cari judul / deskripsi" />
-                <flux:select wire:model.live="category" placeholder="Semua kategori">
+    </div>
+
+    <!-- Actions Toolbar -->
+    <div class="flex flex-col xl:flex-row gap-4 justify-between items-center mb-6">
+        <!-- Search & Filter -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full xl:w-auto flex-1 max-w-4xl">
+            <div class="relative flex-1 group">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-secondary group-focus-within:text-primary transition-colors"></i>
+                <input 
+                    type="text" 
+                    wire:model.live.debounce.400ms="search"
+                    placeholder="Cari judul atau deskripsi prestasi..." 
+                    class="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-white text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-300"
+                >
+            </div>
+            
+            <div class="flex gap-2 min-w-[200px]">
+                <select 
+                    wire:model.live="category"
+                    class="w-full h-12 px-4 rounded-xl border border-border bg-white text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-300 appearance-none cursor-pointer"
+                >
                     <option value="">Semua Kategori</option>
                     @foreach ($categories as $categoryOption)
                         <option value="{{ $categoryOption }}">{{ $categoryOption }}</option>
                     @endforeach
-                </flux:select>
+                </select>
+                
+                <button 
+                    wire:click="reset(['search','category'])"
+                    class="size-12 flex items-center justify-center rounded-xl bg-white border border-border hover:border-primary text-secondary hover:text-primary transition-all duration-300 cursor-pointer shrink-0"
+                    title="Reset Filter"
+                >
+                    <i data-lucide="refresh-cw" class="size-5"></i>
+                </button>
             </div>
-            <flux:button
-                class="w-full md:w-auto"
-                variant="outline"
-                icon="arrow-path"
-                wire:click="reset(['search','category'])"
-                type="button">
-                Reset Filter
-            </flux:button>
-            <flux:button
-                class="w-full md:w-auto"
-                variant="primary"
-                color="gray"
-                icon="plus"
-                href="{{ route('admin.achievement.create') }}"
-                size="sm">
-                Tambah Prestasi
-            </flux:button>
         </div>
+
+        <!-- Add Button -->
+        <a href="{{ route('admin.achievement.create') }}" wire:navigate class="w-full xl:w-auto px-6 h-12 bg-primary hover:bg-primary-hover text-white rounded-full font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer shrink-0">
+            <i data-lucide="plus" class="size-5"></i>
+            <span>Tambah Prestasi</span>
+        </a>
     </div>
 
+    <!-- Active Filters Badge -->
     @if($search || $category)
-        <div class="mt-4 flex flex-wrap items-center gap-3 text-sm">
-            <span class="text-gray-500 dark:text-zinc-400">Filter aktif:</span>
-            @if($search)
-                <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 text-emerald-700 px-3 py-1">
-                    <i class="fas fa-search"></i>
-                    "{{ $search }}"
-                </span>
-            @endif
-            @if($category)
-                <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 text-emerald-700 px-3 py-1">
-                    <i class="fas fa-tag"></i>
-                    {{ $category }}
-                </span>
-            @endif
-        </div>
+    <div class="flex flex-wrap gap-2 mb-6">
+        @if($search)
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
+            Search: {{ $search }}
+            <button wire:click="$set('search', '')" class="hover:text-primary-hover"><i data-lucide="x" class="size-3"></i></button>
+        </span>
+        @endif
+        @if($category)
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warning/10 text-warning text-xs font-bold border border-warning/20">
+            Category: {{ $category }}
+            <button wire:click="$set('category', '')" class="hover:text-warning-hover"><i data-lucide="x" class="size-3"></i></button>
+        </span>
+        @endif
+    </div>
     @endif
 
     @if (session()->has('message'))
-        <div class="mb-4 p-4 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 rounded-lg">
+        <div class="mb-6 p-4 rounded-2xl bg-success-light border border-success/20 text-success font-bold flex items-center gap-3">
+            <i data-lucide="check-circle" class="size-5"></i>
             {{ session('message') }}
         </div>
     @endif
-    
-     <!-- Tabel -->
-    <div class="mt-6 bg-white dark:bg-zinc-800 shadow rounded-lg overflow-hidden border border-gray-200 dark:border-zinc-700 transition-colors duration-200">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-gray-700 dark:text-zinc-200">
-                <thead class="bg-gray-100 dark:bg-zinc-700 text-gray-900 dark:text-zinc-100 uppercase text-xs font-semibold">
-                    <tr>
-                        <th class="px-4 py-3 text-center">ID</th>
-                        <th class="px-4 py-3 text-center">Judul</th>
-                        <th class="px-4 py-3 text-center">Deskripsi</th>
-                        <th class="px-4 py-3 text-center">Foto Dokumentasi</th>
-                        <th class="px-4 py-3 text-center">Tanggal</th>
-                        <th class="px-4 py-3 text-center">Kategori</th>
-                        <th class="px-4 py-3 text-center">Dibuat</th>
-                        <th class="px-4 py-3 text-center">Diperbarui</th>
-                        <th class="px-4 py-3 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-zinc-700 text-center ">
-                    @forelse ($achievements as $achievement)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition duration-150 ease-in-out cursor-pointer">
-                        <td class="px-4 py-3 font-medium text-gray-900 dark:text-zinc-100">
-                            {{ $achievements->firstItem() + $loop->index }}
-                        </td>
-                        <td class="px-4 py-3 font-medium text-emerald-600 dark:text-emerald-400">
-                            {{ $achievement->title }}
-                        </td>
-                        <td class="px-4 py-3 font-medium text-emerald-600 dark:text-emerald-400">
-                            {{ Str::limit($achievement->description, 50) }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex justify-center">
-                                @if($achievement->image)
-                                    @if($achievement->image_exists)
-                                        <img
-                                            src="{{ asset('storage/' . $achievement->image) }}"
-                                            alt="{{ $achievement->title }}"
-                                            class="w-10 h-10 rounded-lg object-cover border-2 border-gray-300 dark:border-gray-600"
-                                            onerror="this.style.display='none'; this.parentNode.querySelector('.fallback').style.display='flex';">
-                                    @endif
-                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center border-2 border-gray-300 dark:border-gray-600 fallback {{ $achievement->image_exists ? 'hidden' : 'flex' }}">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                @else
-                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center border-2 border-gray-300 dark:border-gray-600 fallback">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                @endif
-                            </div>
-                        </td>
-                        <td>{{ \Carbon\Carbon::parse($achievement->date)->format('d M Y') }}</td>
-                        <td>{{ $achievement->category }}</td>
-                        <td>{{ $achievement->created_at }}</td>
-                        <td>{{ $achievement->updated_at }}</td>
-                        <td class="text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <flux:button
-                                    variant="primary"
-                                    icon="pencil-square"
-                                    href="{{ route('admin.achievement.edit', $achievement->id) }}"
-                                    size="sm">
-                                    Edit
-                                </flux:button>
-                                <flux:button
-                                    variant="danger"
-                                    icon="trash"
-                                    size="sm"
-                                    wire:click="delete({{ $achievement->id }})"
-                                    onclick="return confirm('Hapus prestasi ini?')">
-                                    Hapus
-                                </flux:button>
-                            </div>
-                        </td>
 
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="8" class="px-4 py-8 text-center text-gray-500 dark:text-zinc-500">
-                            <div class="flex flex-col items-center justify-center gap-2">
-                                <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                                </svg>
-                                <span>Belum ada data.</span>
+    <!-- Data Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+        @forelse ($achievements as $achievement)
+        <div class="group bg-white rounded-3xl p-5 border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 flex flex-col gap-5 relative">
+            <div class="flex items-start justify-between">
+                <div class="flex gap-4">
+                    <div class="relative">
+                        @if($achievement->image)
+                            <img src="{{ asset('storage/' . $achievement->image) }}" alt="{{ $achievement->title }}" class="size-20 rounded-2xl object-cover ring-2 ring-border group-hover:ring-primary transition-all duration-300">
+                        @else
+                            <div class="size-20 rounded-2xl bg-muted flex items-center justify-center text-secondary ring-2 ring-border group-hover:ring-primary transition-all duration-300">
+                                <i data-lucide="award" class="size-8"></i>
                             </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                        @endif
+                    </div>
+                    <div class="flex-1 flex flex-col pt-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-muted text-secondary text-[10px] font-black uppercase tracking-widest border border-border group-hover:border-primary/30 transition-colors">
+                                {{ $achievement->category }}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-foreground text-lg leading-tight truncate group-hover:text-primary transition-colors">{{ $achievement->title }}</h3>
+                        <p class="text-xs text-secondary mt-1 flex items-center gap-1.5">
+                            <i data-lucide="calendar" class="size-3"></i>
+                            {{ \Carbon\Carbon::parse($achievement->date)->isoFormat('D MMMM YYYY') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="py-4 border-y border-dashed border-border min-h-[80px]">
+                <p class="text-sm text-secondary line-clamp-3 leading-relaxed">
+                    {{ $achievement->description ?: 'Tidak ada deskripsi untuk prestasi ini.' }}
+                </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.achievement.edit', $achievement->id) }}" wire:navigate class="flex-1 h-11 flex items-center justify-center rounded-xl border border-border hover:border-primary text-secondary hover:text-primary font-bold text-sm transition-all duration-300 cursor-pointer">
+                    <i data-lucide="edit-3" class="size-4 mr-2"></i>
+                    Edit
+                </a>
+                <button 
+                    @click="deleteId = {{ $achievement->id }}; showDeleteModal = true"
+                    class="flex-1 h-11 flex items-center justify-center rounded-xl bg-error/10 text-error hover:bg-error hover:text-white font-bold text-sm transition-all duration-300 cursor-pointer shadow-sm"
+                >
+                    <i data-lucide="trash-2" class="size-4 mr-2"></i>
+                    Hapus
+                </button>
+            </div>
         </div>
-        <div class="px-4 py-3 border-t border-gray-200 dark:border-zinc-700">
-            {{ $achievements->links() }}
+        @empty
+        <div class="col-span-full py-20 bg-white rounded-3xl border border-dashed border-border flex flex-col items-center justify-center text-center">
+            <div class="size-20 rounded-full bg-muted flex items-center justify-center text-secondary mb-4">
+                <i data-lucide="info" class="size-10"></i>
+            </div>
+            <h3 class="text-xl font-bold text-foreground">Belum ada data prestasi</h3>
+            <p class="text-secondary mt-1">Silakan tambah prestasi baru untuk memulai.</p>
+        </div>
+        @endforelse
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-12 pb-8">
+        {{ $achievements->links() }}
+    </div>
+    <!-- Delete Confirmation Modal -->
+    <div
+        x-show="showDeleteModal"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0"
+        style="display: none;"
+    >
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" @click="showDeleteModal = false"></div>
+
+        <div 
+            class="relative bg-white dark:bg-zinc-900 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all border border-border"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        >
+            <div class="flex flex-col items-center text-center">
+                <div class="size-14 rounded-full bg-error/10 flex items-center justify-center text-error mb-4">
+                    <i data-lucide="alert-triangle" class="size-7"></i>
+                </div>
+                
+                <h3 class="text-xl font-bold text-foreground mb-2">Hapus Prestasi?</h3>
+                <p class="text-secondary text-sm mb-6">
+                    Apakah Anda yakin ingin menghapus data prestasi ini? Tindakan ini tidak dapat dibatalkan.
+                </p>
+
+                <div class="flex gap-3 w-full">
+                    <button 
+                        @click="showDeleteModal = false"
+                        class="flex-1 px-4 py-2.5 rounded-xl border border-border text-foreground font-semibold hover:bg-muted transition-colors"
+                    >
+                        Batal
+                    </button>
+                    <button 
+                        @click="$wire.delete(deleteId); showDeleteModal = false"
+                        class="flex-1 px-4 py-2.5 rounded-xl bg-error text-white font-semibold hover:bg-error-hover shadow-lg shadow-error/20 transition-all hover:scale-[1.02]"
+                    >
+                        Ya, Hapus
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+

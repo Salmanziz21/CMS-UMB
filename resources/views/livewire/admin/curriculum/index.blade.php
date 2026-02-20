@@ -1,105 +1,121 @@
-<div>
-    <!-- Judul-->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Data Kurikulum</h1>
-            <p class="text-gray-600 dark:text-zinc-300">Kelola semua Data Disini</p>
-        </div>
-        <div class="flex flex-col gap-3 w-full md:w-auto md:flex-row md:items-center md:justify-end">
-            <flux:input wire:model.live.debounce.400ms="search" icon="magnifying-glass" placeholder="Cari mata kuliah" />
-            <flux:select wire:model.live="semester">
-                <option value="">Semua Semester</option>
-                @foreach ($semesters as $semester)
-                    <option value="{{ $semester }}">{{ $semester }}</option>
-                @endforeach
-            </flux:select>
-            
-            <flux:button
-                class="w-full md:w-auto"
-                variant="outline"
-                icon="arrow-path"
-                wire:click="resetFilters"
-                type="button">
-                Reset Filter
-            </flux:button>
-            <flux:button
-                class="w-full md:w-auto"
-                variant="primary"
-                color="gray"
-                icon="plus"
-                href="{{ route('admin.curriculum.create') }}"
-                size="sm">
-                Tambah Kurikulum
-            </flux:button>
+<div x-data="{ showDeleteModal: false, deleteId: null }">
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="flex items-center gap-4 p-5 rounded-2xl bg-white border border-border shadow-sm">
+            <div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <i data-lucide="book-open" class="size-6"></i>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-secondary">Total Mata Kuliah</p>
+                <p class="text-2xl font-bold text-foreground">{{ $curriculums->total() }}</p>
+            </div>
         </div>
     </div>
 
+    <!-- Actions Toolbar -->
+    <div class="flex flex-col lg:flex-row gap-4 justify-between items-center mb-6">
+        <!-- Search & Filter -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto flex-1 max-w-3xl">
+            <div class="relative flex-1 group">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-secondary group-focus-within:text-primary transition-colors"></i>
+                <input 
+                    type="text" 
+                    wire:model.live.debounce.400ms="search"
+                    placeholder="Cari mata kuliah..." 
+                    class="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-white text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-300"
+                >
+            </div>
+            
+            <div class="flex gap-2 min-w-[180px]">
+                <select 
+                    wire:model.live="semester"
+                    class="w-full h-12 px-4 rounded-xl border border-border bg-white text-sm font-medium focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-300 appearance-none cursor-pointer"
+                >
+                    <option value="">Semua Semester</option>
+                    @foreach ($semesters as $semesterItem)
+                        <option value="{{ $semesterItem }}">{{ $semesterItem }}</option>
+                    @endforeach
+                </select>
+                
+                <button 
+                    wire:click="resetFilters"
+                    class="size-12 flex items-center justify-center rounded-xl bg-white border border-border hover:border-primary text-secondary hover:text-primary transition-all duration-300 cursor-pointer shrink-0"
+                    title="Reset Filter"
+                >
+                    <i data-lucide="refresh-cw" class="size-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Button -->
+        <a href="{{ route('admin.curriculum.create') }}" wire:navigate class="w-full lg:w-auto px-6 h-12 bg-primary hover:bg-primary-hover text-white rounded-full font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer shrink-0">
+            <i data-lucide="plus" class="size-5"></i>
+            <span>Tambah Mata Kuliah</span>
+        </a>
+    </div>
+
     @if (session()->has('message'))
-        <div class="mb-4 p-4 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 rounded-lg">
+        <div class="mb-6 p-4 rounded-2xl bg-success-light border border-success/20 text-success font-bold flex items-center gap-3">
+            <i data-lucide="check-circle" class="size-5"></i>
             {{ session('message') }}
         </div>
     @endif
 
-     <!-- Tabel -->
-    <div class="mt-6 bg-white dark:bg-zinc-800 shadow rounded-lg overflow-hidden border border-gray-200 dark:border-zinc-700 transition-colors duration-200">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-gray-700 dark:text-zinc-200">
-                <thead class="bg-gray-100 dark:bg-zinc-700 text-gray-900 dark:text-zinc-100 uppercase text-xs font-semibold">
-                    <tr>
-                        <th class="px-4 py-3 text-center">ID</th>
-                        <th class="px-4 py-3 text-center">Semester</th>
-                        <th class="px-4 py-3 text-center">Mata Kuliah</th>
-                        <th class="px-4 py-3 text-center">Jumlah Sks</th>
-                        <th class="px-4 py-3 text-center">Dibuat</th>
-                        <th class="px-4 py-3 text-center">Diperbarui</th>
-                        <th class="px-4 py-3 text-center">Aksi</th>
+    <!-- Data Table -->
+    <div class="bg-white rounded-3xl border border-border shadow-sm overflow-hidden mb-8">
+        <div class="overflow-x-auto text-center">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-muted/50 border-b border-border">
+                        <th class="px-6 py-4 font-bold text-secondary uppercase tracking-wider">Semester</th>
+                        <th class="px-6 py-4 font-bold text-secondary uppercase tracking-wider text-left">Mata Kuliah</th>
+                        <th class="px-6 py-4 font-bold text-secondary uppercase tracking-wider">SKS</th>
+                        <th class="px-6 py-4 font-bold text-secondary uppercase tracking-wider">Dibuat Pada</th>
+                        <th class="px-6 py-4 font-bold text-secondary uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-zinc-700 text-center ">
+                <tbody class="divide-y divide-border">
                     @forelse ($curriculums as $curriculum)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition duration-150 ease-in-out cursor-pointer">
-                        <td class="px-4 py-3 font-medium text-gray-900 dark:text-zinc-100">
-                            {{ $curriculums->firstItem() + $loop->index }}
+                    <tr class="hover:bg-primary/5 transition-colors group">
+                        <td class="px-6 py-4">
+                            <span class="items-center justify-center size-10 rounded-xl bg-muted text-foreground font-black group-hover:bg-white transition-colors">
+                                {{ $curriculum->semester }}
+                            </span>
                         </td>
-                        <td class="px-4 py-3 font-medium text-emerald-600 dark:text-emerald-400">
-                            {{ $curriculum->semester }}
+                        <td class="px-6 py-4 text-left">
+                            <p class="font-bold text-foreground group-hover:text-primary transition-colors text-base">{{ $curriculum->subject }}</p>
                         </td>
-                        <td class="px-4 py-3 font-medium text-emerald-600 dark:text-emerald-400">
-                            {{ Illuminate\Support\Str::limit($curriculum->subject, 20) }}
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 rounded-full bg-success/10 text-success font-bold text-xs">
+                                {{ $curriculum->number_sks }} SKS
+                            </span>
                         </td>
-                        <td class="px-4 py-3 font-medium text-emerald-600 dark:text-emerald-400">
-                            {{ $curriculum->number_sks }}
+                        <td class="px-6 py-4 text-secondary text-xs">
+                            {{ \Carbon\Carbon::parse($curriculum->created_at)->isoFormat('D MMM YYYY') }}
                         </td>
-                        <td>{{ $curriculum->created_at }}</td>
-                        <td>{{ $curriculum->updated_at }}</td>
-                        <td class="text-center">
+                        <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2">
-                                <flux:button
-                                    variant="primary"
-                                    icon="pencil-square"
-                                    href="{{ route('admin.curriculum.edit', $curriculum->id) }}"
-                                    size="sm">
-                                    Edit
-                                </flux:button>
-                                <flux:button
-                                    variant="danger"
-                                    icon="trash"
-                                    size="sm"
-                                    wire:click="delete({{ $curriculum->id }})"
-                                    onclick="return confirm('Hapus prestasi ini?')">
-                                    Hapus
-                                </flux:button>
+                                <a href="{{ route('admin.curriculum.edit', $curriculum->id) }}" wire:navigate class="size-10 flex items-center justify-center rounded-xl border border-border hover:border-primary text-secondary hover:text-primary transition-all duration-300">
+                                    <i data-lucide="edit-3" class="size-4"></i>
+                                </a>
+                                <button 
+                                    @click="deleteId = {{ $curriculum->id }}; showDeleteModal = true"
+                                    class="size-10 flex items-center justify-center rounded-xl bg-error/10 text-error hover:bg-error hover:text-white transition-all duration-300 cursor-pointer"
+                                >
+                                    <i data-lucide="trash-2" class="size-4"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-4 py-8 text-center text-gray-500 dark:text-zinc-500">
-                            <div class="flex flex-col items-center justify-center gap-2">
-                                <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                                </svg>
-                                <span>Belum ada data.</span>
+                        <td colspan="5" class="px-6 py-20 text-center">
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="size-16 rounded-full bg-muted flex items-center justify-center text-secondary mb-4">
+                                    <i data-lucide="info" class="size-8"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-foreground">Tidak ada data kurikulum</h3>
+                                <p class="text-secondary">Silakan buat mata kuliah baru.</p>
                             </div>
                         </td>
                     </tr>
@@ -107,8 +123,67 @@
                 </tbody>
             </table>
         </div>
-        <div class="px-4 py-3 border-t border-gray-200 dark:border-zinc-700">
-            {{ $curriculums->links() }}
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-8 pb-8">
+        {{ $curriculums->links() }}
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+        x-show="showDeleteModal"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0"
+        style="display: none;"
+    >
+        <!-- Backdrop -->
+        <div 
+            class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+            @click="showDeleteModal = false"
+        ></div>
+
+        <!-- Modal Panel -->
+        <div 
+            class="relative bg-white dark:bg-zinc-900 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all border border-border"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        >
+            <div class="flex flex-col items-center text-center">
+                <div class="size-14 rounded-full bg-error/10 flex items-center justify-center text-error mb-4">
+                    <i data-lucide="alert-triangle" class="size-7"></i>
+                </div>
+                
+                <h3 class="text-xl font-bold text-foreground mb-2">Hapus Data?</h3>
+                <p class="text-secondary text-sm mb-6">
+                    Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.
+                </p>
+
+                <div class="flex gap-3 w-full">
+                    <button 
+                        @click="showDeleteModal = false"
+                        class="flex-1 px-4 py-2.5 rounded-xl border border-border text-foreground font-semibold hover:bg-muted transition-colors"
+                    >
+                        Batal
+                    </button>
+                    <button 
+                        @click="$wire.delete(deleteId); showDeleteModal = false"
+                        class="flex-1 px-4 py-2.5 rounded-xl bg-error text-white font-semibold hover:bg-error-hover shadow-lg shadow-error/20 transition-all hover:scale-[1.02]"
+                    >
+                        Ya, Hapus
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+

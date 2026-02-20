@@ -24,10 +24,10 @@ class Index extends Component
     {
         $this->userinterface = Userinterface::first();
         if ($this->userinterface) {
-            $this->image_logo = $this->userinterface->image_logo;
-            $this->image_background = $this->userinterface->image_background;
-            $this->logoExists = $this->checkImageExists($this->image_logo);
-            $this->bgExists = $this->checkImageExists($this->image_background);
+            // Don't assign string paths to file upload properties.
+            // $image_logo / $image_background stay null unless a new file is being uploaded.
+            $this->logoExists = $this->checkImageExists($this->userinterface->image_logo);
+            $this->bgExists   = $this->checkImageExists($this->userinterface->image_background);
         }
     }
 
@@ -46,17 +46,19 @@ class Index extends Component
             'image_background' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
-        $image_logoPath = $this->image_logo;
+        // Process logo upload
+        $image_logoPath = $this->userinterface?->image_logo; // keep existing by default
         if ($this->image_logo && !is_string($this->image_logo)) {
-            if ($this->userinterface && $this->userinterface->image_logo && Storage::disk('public')->exists($this->userinterface->image_logo)) {
+            if ($this->userinterface?->image_logo && Storage::disk('public')->exists($this->userinterface->image_logo)) {
                 Storage::disk('public')->delete($this->userinterface->image_logo);
             }
             $image_logoPath = $this->image_logo->store('userinterfaces', 'public');
         }
 
-        $image_backgroundPath = $this->image_background;
+        // Process background upload
+        $image_backgroundPath = $this->userinterface?->image_background; // keep existing by default
         if ($this->image_background && !is_string($this->image_background)) {
-            if ($this->userinterface && $this->userinterface->image_background && Storage::disk('public')->exists($this->userinterface->image_background)) {
+            if ($this->userinterface?->image_background && Storage::disk('public')->exists($this->userinterface->image_background)) {
                 Storage::disk('public')->delete($this->userinterface->image_background);
             }
             $image_backgroundPath = $this->image_background->store('userinterfaces', 'public');
@@ -66,8 +68,8 @@ class Index extends Component
             $studyprogram = Studyprogram::first();
             if ($studyprogram) {
                 $this->userinterface = Userinterface::create([
-                    'studyprogram_id' => $studyprogram->id,
-                    'image_logo' => $image_logoPath,
+                    'studyprogram_id'  => $studyprogram->id,
+                    'image_logo'       => $image_logoPath,
                     'image_background' => $image_backgroundPath,
                 ]);
             } else {
@@ -76,15 +78,15 @@ class Index extends Component
             }
         } else {
             $this->userinterface->update([
-                'image_logo' => $image_logoPath ?? $this->userinterface->image_logo,
-                'image_background' => $image_backgroundPath ?? $this->userinterface->image_background,
+                'image_logo'       => $image_logoPath,
+                'image_background' => $image_backgroundPath,
             ]);
         }
 
-        $this->image_logo = $this->userinterface->image_logo;
-        $this->image_background = $this->userinterface->image_background;
-        $this->logoExists = $this->checkImageExists($this->image_logo);
-        $this->bgExists = $this->checkImageExists($this->image_background);
+        $this->image_logo       = null; // reset so next upload is clean
+        $this->image_background = null;
+        $this->logoExists = $this->checkImageExists($this->userinterface->image_logo);
+        $this->bgExists   = $this->checkImageExists($this->userinterface->image_background);
 
         session()->flash('message', 'Data berhasil disimpan.');
     }
